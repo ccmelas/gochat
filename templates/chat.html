@@ -1,0 +1,68 @@
+<html lang="en">
+<head>
+    <title>GoChat</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <style>
+        ul#messages { list-style: none; }
+        ul#messages li { margin-bottom: 2px; }
+        ul#messages li img { margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <ul id="messages"></ul>
+            </div>
+        </div>
+        <form id="chatbox" role="form">
+            <div class="form-group">
+                <label for="message">Send a message as {{.UserData.name}} </label> or
+                <a href="/logout">Sign out</a>
+                <textarea id="message" class="form-control"></textarea>
+            </div>
+            <input type="submit" value="Send" class="btn btn-default" />
+        </form>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"> </script>
+    <script>
+        $(function(){
+            let socket = null;
+            const msgBox = $("#chatbox textarea");
+            const messages = $("#messages");
+            $("#chatbox").submit(function(){
+                if (!msgBox.val()) return false;
+                if (!socket) {
+                    alert("Error: There is no socket connection.");
+                    return false;
+                }
+                socket.send(JSON.stringify({ "Message": msgBox.val() }));
+                msgBox.val("");
+                return false;
+            });
+            if (!window["WebSocket"]) {
+                alert("Error: Your browser does not support web sockets.")
+            } else {
+                socket = new WebSocket("ws://{{ .Host }}/room");
+                socket.onclose = function() {
+                    alert("Connection has been closed.");
+                }
+                socket.onmessage = function(e) {
+                    const message = JSON.parse(e.data);
+                    messages.append(
+                        $("<li>").append(
+                            $("<img>")
+                                .css({ width:50, verticalAlign:"middle" })
+                                .attr("title", message.Name)
+                                .attr("src", message.AvatarURL),
+                            // $("<strong>").text(message.Name + ": "),
+                            $("<span>").text(message.Message)
+                        )
+                    );
+                }
+            }
+        });
+    </script>
+</body>
+</html>
