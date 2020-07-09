@@ -55,8 +55,6 @@ func MustAuth(handler http.Handler) http.Handler {
 
 // login handler handles the third party login process
 // format /auth/{action}/{provider}
-// Id: 267168534902-8oc8ae814dpi9ntbirmrcnke0b5n364g.apps.googleusercontent.com
-// Secret: R9tRLytr_Bav6WPk1FwGgtHJ
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	segs := strings.Split(r.URL.Path, "/")
 	if len(segs) < 4 {

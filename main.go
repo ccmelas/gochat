@@ -45,14 +45,15 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 func main() {
 	var addr = flag.String("addr", ":8080", "The address of the application")
 	flag.Parse()
-	gomniauth.SetSecurityKey("myAuthKey")
+	// @todo use env vars for keys
+	gomniauth.SetSecurityKey("")
 	gomniauth.WithProviders(
-		google.New("267168534902-8oc8ae814dpi9ntbirmrcnke0b5n364g.apps.googleusercontent.com",
-			"R9tRLytr_Bav6WPk1FwGgtHJ",
+		google.New("",
+			"",
 			"http://localhost"+*addr+"/auth/callback/google"),
-		facebook.New("688657768582820", "d5048cd1a3141622dac6fc036fbd2e2f",
+		facebook.New("", "",
 			"http://localhost"+*addr+"/auth/callback/facebook"),
-		github.New("4d8d44615ee369f4c914", "a92d69db777308e72ac039c1eac8eef2e2b05d99",
+		github.New("", "",
 			"http://localhost"+*addr+"/auth/callback/github"))
 	r := newRoom()
 	r.tracer = trace.New(os.Stdout)
